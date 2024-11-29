@@ -19,16 +19,29 @@ mongoose.connect(process.env.DATABASE_URL, {
 app.use(express.json());
 
 app.get('/api/professionals', async (req, res) => {
-  try {
-    const professions = req.query.professions?.split(',') || []; 
-    const professionals = await Professional.find({ profession: { $in: professions } })
-      .select('name email profession'); 
-    res.json(professionals);
-  } catch (error) {
-    console.error('Erro ao buscar profissionais:', error);
-    res.status(500).json({ message: 'Erro no servidor' });
-  }
-});
+    try {
+      console.log('Query Professions:', req.query.professions);
+  
+      const professions = req.query.professions ? req.query.professions.split(',') : [];
+      console.log('Profissões separadas:', professions);
+  
+      const professionals = await Professional.find({ 
+        profession: { $in: professions } 
+      }).select('name email profession -_id');
+  
+      console.log('Profissionais encontrados:', professionals);
+  
+      if (professionals.length === 0) {
+        return res.status(404).json({ message: 'Nenhum profissional encontrado' });
+      }
+  
+      res.json(professionals);
+    } catch (error) {
+      console.error('Erro ao buscar profissionais:', error);
+      res.status(500).json({ message: 'Erro no servidor' });
+    }
+  });
+  
 
 app.use('/api', professionalRoutes);
 
