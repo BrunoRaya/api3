@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-// Definindo o esquema de dados para os profissionais
 const professionalSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true },
@@ -16,7 +15,6 @@ const professionalSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
-// Criando o modelo para o Professional
 const Professional = mongoose.model('Professional', professionalSchema);
 
 export default Professional;
