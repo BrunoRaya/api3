@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const professionalSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true },
-  profession: { type: String, required: true },
+  profession: { type: [String], required: true },
   address: {
     street: { type: String, required: true },
     city: { type: String, required: true },
@@ -18,3 +18,4 @@ const professionalSchema = new mongoose.Schema({
 const Professional = mongoose.model('Professional', professionalSchema);
 
 export default Professional;
+

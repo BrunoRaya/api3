@@ -25,9 +25,12 @@ app.get('/api/professionals', async (req, res) => {
       const professions = req.query.professions ? req.query.professions.split(',') : [];
       console.log('Profissões separadas:', professions);
   
-      const professionals = await Professional.find({ 
-        profession: { $in: professions } 
-      }).select('name email profession -_id');
+      const filter = professions.map(profession => ({
+        profession: { $regex: `.*${profession}.*`, $options: 'i' },
+      }));
+  
+      const professionals = await Professional.find({ $or: filter }) 
+        .select('name email profession -_id'); 
   
       console.log('Profissionais encontrados:', professionals);
   
@@ -41,6 +44,7 @@ app.get('/api/professionals', async (req, res) => {
       res.status(500).json({ message: 'Erro no servidor' });
     }
   });
+  
   
 
 app.use('/api', professionalRoutes);
