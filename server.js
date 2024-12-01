@@ -19,33 +19,31 @@ mongoose.connect(process.env.DATABASE_URL, {
 app.use(express.json());
 
 app.get('/api/professionals', async (req, res) => {
-    try {
-      console.log('Query Professions:', req.query.professions);
-  
-      const professions = req.query.professions ? req.query.professions.split(',') : [];
-      console.log('Profissões separadas:', professions);
-  
-      const filter = professions.map(profession => ({
-        profession: { $regex: `.*${profession}.*`, $options: 'i' },
-      }));
-  
-      const professionals = await Professional.find({ $or: filter }) 
-        .select('name email profession -_id'); 
-  
-      console.log('Profissionais encontrados:', professionals);
-  
-      if (professionals.length === 0) {
-        return res.status(404).json({ message: 'Nenhum profissional encontrado' });
-      }
-  
-      res.json(professionals);
-    } catch (error) {
-      console.error('Erro ao buscar profissionais:', error);
-      res.status(500).json({ message: 'Erro no servidor' });
+  try {
+    
+    let professions = req.query.professions;
+
+    if (typeof professions === 'string') {
+      professions = professions.split(','); 
+    } else if (!Array.isArray(professions)) {
+      professions = []; 
     }
-  });
-  
-  
+
+    console.log('Query Professions:', professions); 
+
+    const professionals = await Professional.find({ profession: { $in: professions } })
+      .select('name email profession -_id');
+
+    if (professionals.length === 0) {
+      return res.status(404).json({ message: 'Nenhum profissional encontrado' });
+    }
+
+    res.json(professionals);
+  } catch (error) {
+    console.error('Erro ao buscar profissionais:', error);
+    res.status(500).json({ message: 'Erro no servidor' });
+  }
+});
 
 app.use('/api', professionalRoutes);
 
