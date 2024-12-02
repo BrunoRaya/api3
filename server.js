@@ -32,7 +32,7 @@ app.get('/api/professionals', async (req, res) => {
     console.log('Query Professions:', professions); 
 
     const professionals = await Professional.find({ profession: { $in: professions } })
-      .select('name email profession -_id');
+      .select('name email profession valor -_id');
 
     if (professionals.length === 0) {
       return res.status(404).json({ message: 'Nenhum profissional encontrado' });

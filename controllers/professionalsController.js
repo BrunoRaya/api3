@@ -6,7 +6,7 @@ export const getProfessionalsByProfession = async (req, res) => {
   try {
     const professionals = await Professional.find({
       profession: { $regex: profession, $options: 'i' }, 
-    }).select('name email profession -_id'); 
+    }).select('name email profession valor -_id'); 
 
     if (professionals.length === 0) {
       return res.status(404).json({ message: 'Nenhum profissional encontrado para esta profissão.' });
