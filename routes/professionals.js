@@ -16,7 +16,7 @@ router.get('/professionals', async (req, res) => {
         profession: { $regex: `(^|,\\s*)${prof}(\\s*,|$)`, $options: 'i' }
       }))
     })
-      .select('name email profession -_id');
+      .select('name email profession valor -_id');
 
     if (professionals.length === 0) {
       return res.status(404).json({ message: 'Nenhum profissional encontrado para as profissões fornecidas.' });
